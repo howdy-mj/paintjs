@@ -4,15 +4,19 @@ const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
 
-// js내에 canvas pixel modifier에 사이즈를 줘야 출력될 수 있음
-canvas.width = 700;
-canvas.height = 700;
+const INITIAL_COLOR = "#2c2c2c"; // 기본 색상
+const CANVAS_SIZE = 700;
 
-ctx.strokeStyle = "#2c2c2c";
+// js내에 canvas pixel modifier에 사이즈를 줘야 출력될 수 있음
+canvas.width = CANVAS_SIZE;
+canvas.height = CANVAS_SIZE;
+
+ctx.strokeStyle = INITIAL_COLOR; // 연필
+ctx.fillStyle = INITIAL_COLOR; // 채우기
 ctx.lineWidth = 2.5;
 
 let painting = false;
-let filling = false; // 채우기
+let filling = false; // 채운 후에 그릴 수 있도록 따로 variable 생성
 
 function stopPainting(){
     painting = false;
@@ -40,6 +44,7 @@ function onMouseMove(event){
 function handleColorClick(event){
     const color = event.target.style.backgroundColor;
     ctx.strokeStyle = color; // 선택한 색상이 유지되도록 color에 뒤집어 씌우기
+    ctx.fillStyle = color;
 }
 
 function handleRangeChange(event){
@@ -58,11 +63,18 @@ function handleModeClick(){
     }
 }
 
+function handleCanvasClick(){
+    if(filling){
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    }
+}
+
 if(canvas){
     canvas.addEventListener("mousemove", onMouseMove);
     canvas.addEventListener("mousedown", startPainting);
     canvas.addEventListener("mouseup", stopPainting);
     canvas.addEventListener("mouseleave", stopPainting);
+    canvas.addEventListener("click", handleCanvasClick);
 }
 
 // colors의 색상 위치 가져오기
