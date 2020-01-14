@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
+const saveBtn = document.getElementById("jsSave");
 
 const INITIAL_COLOR = "#2c2c2c"; // 기본 색상
 const CANVAS_SIZE = 700;
@@ -10,6 +11,10 @@ const CANVAS_SIZE = 700;
 // js내에 canvas pixel modifier에 사이즈를 줘야 출력될 수 있음
 canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
+
+// 기본값이 흰색 배경이 되도록 설정
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
 ctx.strokeStyle = INITIAL_COLOR; // 연필
 ctx.fillStyle = INITIAL_COLOR; // 채우기
@@ -69,12 +74,26 @@ function handleCanvasClick(){
     }
 }
 
+function handleContextMenu(event){
+    event.preventDefault(); // 우클릭방지
+}
+
+// 저장 버튼
+function handleSaveClick(){
+    const image = canvas.toDataURL(""); //default는 png
+    const link = document.createElement("a");
+    link.href = image; // href는 주소
+    link.download = "PaintJS_Export"; //download는 문서 이름
+    link.click();
+}
+
 if(canvas){
     canvas.addEventListener("mousemove", onMouseMove);
     canvas.addEventListener("mousedown", startPainting);
     canvas.addEventListener("mouseup", stopPainting);
     canvas.addEventListener("mouseleave", stopPainting);
     canvas.addEventListener("click", handleCanvasClick);
+    canvas.addEventListener("contextmenu", handleContextMenu)
 }
 
 // colors의 색상 위치 가져오기
@@ -88,4 +107,8 @@ if(range){
 
 if(mode){
     mode.addEventListener("click", handleModeClick);
+}
+
+if(saveBtn){
+    saveBtn.addEventListener("click", handleSaveClick);
 }
